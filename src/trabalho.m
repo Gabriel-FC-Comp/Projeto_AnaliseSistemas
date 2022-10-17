@@ -74,12 +74,13 @@ pause(Tempo);
 
 %% Calcula o SNR
 
-Evoz = sum(vozSinal(:).^2); %Energia do sinal da Voz
-Pvoz = Evoz / length(vozSinal); %Potência do sinal da Voz
+%Alternativa/Lógica
+%Evoz = sum(vozSinal(:).^2); %Energia do sinal da Voz
+%Pvoz = Evoz / length(vozSinal); %Potência do sinal da Voz
+%Eruido = sum(ruidoSinal(:).^2); %Energia do Ruído
+%Pruido = Eruido / length(ruidoSinal); %Potência do Ruído
+% SNR = 10 * log10(Pvoz / Pruido); 
 
-Eruido = sum(ruidoSinal(:).^2); %Energia do Ruído
-Pruido = Eruido / length(ruidoSinal); %Potência do Ruído
-
-SNR = (Pvoz / Pruido);
+SNR = snr(somaSinal,ruidoSinal);
 
 %%

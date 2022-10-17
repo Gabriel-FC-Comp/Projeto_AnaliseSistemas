@@ -48,9 +48,28 @@ somaSinal = vozSinal + ruidoSinal;
 subplot(3,1,3);
 plot(somaSinal);
 
-%% tocar audio
-somaAudio = audioplayer(somaSinal,FS);
-play(somaAudio);
+
+%% tocar voz, ruido e voz resultante
+clc;
+% tocar voz
+tocar = audioplayer(vozSinal,FS);
+play(tocar);
+disp("tocando voz");
+
+pause(Tempo);
+
+% tocar ruido
+tocar = audioplayer(ruidoSinal,FS);
+play(tocar);
+disp("tocando ruido");
+
+pause(Tempo);
+
+% tocar soma
+tocar = audioplayer(somaSinal,FS);
+play(tocar);
 disp("tocando audio resultante");
 
+pause(Tempo);
 
+%%

@@ -10,11 +10,14 @@ Right now, the program does the following:
 - Transforms the sum of both vectors (Z) back into audio;
 - Plays any of the three audios.
 
+----
+
 TODO:
 - Determine what is the signal-noise relation;
 - Tidy up plotting;
 - Create moving average¹ using convolution;
-later:
+
+TODO in the future:
 - Create spectrum frequency code to show it using Fourier;
 - Scale spectrum accordingly.
 

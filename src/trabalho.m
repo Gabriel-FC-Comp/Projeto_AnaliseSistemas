@@ -123,11 +123,25 @@ SNR = 10 * log10(PotenciaVoz / PotenciaRuido);
 disp("SNR = " + SNR + " dB");
 
 %% media movel em convolução
-rangeDaMedia = 10;
+rangeDaMedia = 100;
 tamSoma = length(somaSinal);
 mediaMovel = zeros(tamSoma, 1);
 for n = (1 + rangeDaMedia) : (tamSoma - rangeDaMedia)
     mediaMovel(n) = sum(somaSinal(n - rangeDaMedia : n + rangeDaMedia)) / (tamSoma + 1);
 end
 
+figure();
+Z = conv(somaSinal, mediaMovel);
+plot(Z)
 
+%%
+intervalo = (1 + rangeDaMedia) : (tamSoma - rangeDaMedia);
+resultadoFiltro = zeros(length(intervalo), 1);
+for n = (1 + rangeDaMedia) : (tamSoma - rangeDaMedia)
+    resultadoFiltro(n) = somaSinal(n) - Z(n);
+end
+
+plot(resultadoFiltro);
+F = audioplayer(resultadoFiltro,FS);
+play(F);
+disp("Tocando audio resultante");

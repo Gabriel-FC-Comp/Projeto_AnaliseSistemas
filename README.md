@@ -14,7 +14,6 @@ Right now, the program does the following:
 
 TODO:
 - Determine what is the signal-noise relation;
-- Tidy up plotting;
 - Create moving average¹ using convolution;
 
 TODO in the future:

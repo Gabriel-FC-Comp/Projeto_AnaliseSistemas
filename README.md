@@ -8,12 +8,12 @@ Right now, the program does the following:
 - Sums both vectors by simply doing Z = X + Y;
 - Plots all three vectors;
 - Transforms the sum of both vectors (Z) back into audio;
-- Plays any of the three audios.
+- Plays any of the three audios;
+- Shows on the log what is the SNR of the 2 audios;
 
 ----
 
 TODO:
-- Determine what is the signal-noise relation;
 - Create moving average¹ using convolution;
 
 TODO in the future:

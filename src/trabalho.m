@@ -7,8 +7,8 @@ close all
 clc
 clear
 
-%% Gravar áudios
-Tempo = 5; %5 segundos de gravação
+%% setup gravação
+Tempo = 10; %5 segundos de gravação
 FS = 44100; %Frequência de amostragem em 44.1 kHz
 Nbits = 16; %sinal de 16 bits
 %16 bits x 44100 Hz = 705600 bps ou 705.6 Kbps
@@ -34,20 +34,28 @@ stop(ruidoAudio);
 disp("Término gravacao ruido.");
 
 %% traduzir sinais gravados para vetor, somar ruido e voz + plotar 
-%guardar voz em uma variavel double
+% janela
+figure('Name','Gráficos dos áudios','NumberTitle','off');
+
+% guardar voz em uma variavel double
 vozSinal = getaudiodata(vozAudio, 'double');
 subplot(3,1,1);
 plot(vozSinal);
+ylim([-1 1]);
+xlim([0 5]);
 
-%guardar ruido em uma variavel double
+% guardar ruido em uma variavel double
 ruidoSinal = getaudiodata(ruidoAudio, 'double');
 subplot(3,1,2);
 plot(ruidoSinal);
+ylim([-1 1]);
+xlim([0 5]);
 
 somaSinal = vozSinal + ruidoSinal;
 subplot(3,1,3);
 plot(somaSinal);
-
+ylim([-1 1]);
+xlim([0 5]);
 
 %% tocar voz, ruido e voz resultante
 clc;
@@ -66,21 +74,16 @@ disp("tocando ruido");
 pause(Tempo);
 
 % tocar soma
-tocar = audioplayer(somaSinal,FS);
-play(tocar);
+somaAudio = audioplayer(somaSinal,FS);
+play(somaAudio);
 disp("tocando audio resultante");
 
 pause(Tempo);
 
-%% Calcula o SNR
+%% SNR
+% janela
+figure('Name','Gráfico SNR','NumberTitle','off');
 
-%Alternativa/Lógica
-%Evoz = sum(vozSinal(:).^2); %Energia do sinal da Voz
-%Pvoz = Evoz / length(vozSinal); %Potência do sinal da Voz
-%Eruido = sum(ruidoSinal(:).^2); %Energia do Ruído
-%Pruido = Eruido / length(ruidoSinal); %Potência do Ruído
-% SNR = 10 * log10(Pvoz / Pruido); 
-
-SNR = snr(somaSinal,ruidoSinal);
-
-%%
+% plotar
+r = snr(vozSinal,ruidoSinal);
+plot(r);

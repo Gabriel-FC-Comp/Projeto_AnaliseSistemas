@@ -122,26 +122,48 @@ PotenciaRuido = EnergiaRuido / length(ruidoSinal); %Potência do Ruído
 SNR = 10 * log10(PotenciaVoz / PotenciaRuido);
 disp("SNR = " + SNR + " dB");
 
-%% media movel em convolução
-rangeDaMedia = 100;
-tamSoma = length(somaSinal);
-mediaMovel = zeros(tamSoma, 1);
-for n = (1 + rangeDaMedia) : (tamSoma - rangeDaMedia)
-    mediaMovel(n) = sum(somaSinal(n - rangeDaMedia : n + rangeDaMedia)) / (tamSoma + 1);
+%% media movel em convolução otimizada
+
+rangeDaMedia = 1:10:1000;
+E = zeros(length(rangeDaMedia),1);
+k = 1;
+for a = rangeDaMedia
+    size = a+a+1;
+    respostaImpulso = ones(size, 1)/size;
+    resultadoFiltro = conv(somaSinal,respostaImpulso,'same');
+    residuo = vozSinal - resultadoFiltro;
+    E(k) = sum(residuo.^2);
+    k = k+1;
 end
 
-figure();
-Z = conv(somaSinal, mediaMovel);
-plot(Z)
+%% Determinando Melhor Intervalo de Filtragem
 
-%%
-intervalo = (1 + rangeDaMedia) : (tamSoma - rangeDaMedia);
-resultadoFiltro = zeros(length(intervalo), 1);
-for n = (1 + rangeDaMedia) : (tamSoma - rangeDaMedia)
-    resultadoFiltro(n) = somaSinal(n) - Z(n);
-end
+melhorRangeMedia = rangeDaMedia(E == min(E));
+melhorRespostaImpulso = ones(melhorRangeMedia+melhorRangeMedia+1,1)/(melhorRangeMedia+melhorRangeMedia+1);
+melhorResultadoFiltro = conv(somaSinal,melhorRespostaImpulso,'same');
 
-plot(resultadoFiltro);
-F = audioplayer(resultadoFiltro,FS);
+
+%% Plotando Resultados
+
+figure
+%Plotando Energia Residual para cada intervalo de média móvel calculado
+subplot(2,1,1)
+plot(rangeDaMedia,E);
+title('Energia Residual por Range de Média Móvel');
+xlabel('Range');
+ylabel('Energia Residual');
+% Plotando a forma de onda do melhor resultado do filtro em comparação com
+% osinal original
+subplot(2,1,2)
+hold on
+plot(DelimitadorEmX,vozSinal,'k');
+plot(DelimitadorEmX,melhorResultadoFiltro,'r');
+hold off
+title('Melhor Resultado Filtrado vs Áudio Original');
+legend({'Melhor Áudio Filtrado','Áudio Original'});
+xlabel('Tempo');
+
+
+F = audioplayer(melhorResultadoFiltro,FS,8);
 play(F);
 disp("Tocando audio resultante");

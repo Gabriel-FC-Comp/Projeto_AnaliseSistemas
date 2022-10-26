@@ -4,7 +4,7 @@
 %   Vitor Batista
 %   Gabriel Finger
 %   Leonardo Fagote
-%   Arnard Souza
+%   Arnald Souza
 % Prof.: Daniel Campos
 
 close all

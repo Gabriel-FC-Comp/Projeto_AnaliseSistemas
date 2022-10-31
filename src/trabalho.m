@@ -45,11 +45,13 @@ disp("Término gravacao ruido.");
 % janela
 figure('Name','Gráficos dos áudios','NumberTitle','off');
 
+% guardar voz em uma variavel double
+vozSinal = getaudiodata(vozAudio, 'double');
+
 % delimitador em x
 DelimitadorEmX = (0:length(vozSinal)-1)/FS;
 
-% guardar voz em uma variavel double
-vozSinal = getaudiodata(vozAudio, 'double');
+% plota
 subplot(3,1,1);
 plot(DelimitadorEmX, vozSinal,'r');
 ylim([-1 1]);

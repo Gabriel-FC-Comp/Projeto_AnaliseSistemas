@@ -38,6 +38,9 @@ stop(ruidoAudio);
 
 disp("Término gravacao ruido.");
 
+%% load audio
+% load("Projeto_AnaliseSistemas-main\src\variaveisDeTeste.mat")
+
 %% traduzir sinais gravados para vetor, somar ruido e voz + plotar 
 % janela
 figure('Name','Gráficos dos áudios','NumberTitle','off');
@@ -148,7 +151,7 @@ melhorResultadoFiltro = conv(somaSinal,melhorRespostaImpulso,'same');
 figure
 %Plotando Energia Residual para cada intervalo de média móvel calculado
 subplot(2,1,1)
-plot(rangeDaMedia,E);
+plot(rangeDaMedia,E,'k-o');
 title('Energia Residual por Range de Média Móvel');
 xlabel('Range');
 ylabel('Energia Residual');
@@ -156,11 +159,11 @@ ylabel('Energia Residual');
 % osinal original
 subplot(2,1,2)
 hold on
-plot(DelimitadorEmX,vozSinal,'k');
-plot(DelimitadorEmX,melhorResultadoFiltro,'r');
+plot(DelimitadorEmX,vozSinal,'r');
+plot(DelimitadorEmX,melhorResultadoFiltro,'k');
 hold off
 title('Melhor Resultado Filtrado vs Áudio Original');
-legend({'Melhor Áudio Filtrado','Áudio Original'});
+legend({'Áudio Original','Melhor Áudio Filtrado'});
 xlabel('Tempo');
 
 F = audioplayer(melhorResultadoFiltro,FS,8);

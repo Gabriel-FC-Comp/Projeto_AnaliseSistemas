@@ -163,7 +163,6 @@ title('Melhor Resultado Filtrado vs Áudio Original');
 legend({'Melhor Áudio Filtrado','Áudio Original'});
 xlabel('Tempo');
 
-
 F = audioplayer(melhorResultadoFiltro,FS,8);
 play(F);
 disp("Tocando audio resultante");

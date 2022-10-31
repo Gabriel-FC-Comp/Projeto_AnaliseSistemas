@@ -129,7 +129,7 @@ disp("SNR = " + SNR + " dB");
 
 %% media movel em convolução otimizada
 
-rangeDaMedia = 1:10:1000;
+rangeDaMedia = 1:1:200;
 E = zeros(length(rangeDaMedia),1);
 k = 1;
 for a = rangeDaMedia

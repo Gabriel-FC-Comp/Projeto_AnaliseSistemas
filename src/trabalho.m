@@ -15,7 +15,8 @@ clear
 Tempo = 5; %5 segundos de gravação
 FS = 44100; %Frequência de amostragem em 44.1 kHz
 Nbits = 16; %sinal de 16 bits
-%16 bits x 44100 Hz = 705600 bps ou 705.6 Kbps
+%16 bits x 44100 Hz = 705600 bps ou 705.6 Kbps (~88 KBps)
+tamSinal = FS * Nbits;
 Canais = 1; %1 = mono, 2 = stereo
 
 %% setup gravacao
@@ -29,6 +30,9 @@ pause(Tempo);
 stop(vozAudio);
 
 disp("Término gravacao voz.");
+
+%% workaround erro de tam diferente
+pause(1);
 
 %% gravar ruido
 disp("Ruido gravando.");
@@ -46,7 +50,7 @@ disp("Término gravacao ruido.");
 figure('Name','Gráficos dos áudios','NumberTitle','off');
 
 % guardar voz em uma variavel double
-vozSinal = getaudiodata(vozAudio, 'double');
+vozSinal = getaudiodata(vozAudio, 'double'); %transforma pra vetor double
 
 % delimitador em x
 DelimitadorEmX = (0:length(vozSinal)-1)/FS;
@@ -81,6 +85,46 @@ title("Sinal da soma entre os dois áudios");
 xlabel("Tempo em segundos");
 ylabel("Amplitude");
 
+%% manipulaçao
+
+%    0 = nada
+% 1 = modular por funçao
+% 2 = clipping
+% 3 = inverter
+% 4 = echo
+manipulacao = 3;
+
+if (manipulacao ~= 0)
+    sinalManipulado = zeros(1, tamSinal + 1);
+end
+
+if (manipulacao == 1)
+
+end
+
+if (manipulacao == 2)
+
+end
+
+if (manipulacao == 3)
+    for i = 1: tamSinal
+        sinalManipulado(tamSinal-i) = somaSinal(i);
+    end
+end
+
+if (manipulacao == 4)
+    
+end
+
+if (manipulacao ~= 0)
+    tocar = audioplayer(sinalManipulado);
+
+    disp("Tocando sinal manipulado");
+    play(tocar);
+
+    pause(Tempo);
+end
+
 %% tocar voz, ruido e voz resultante
 clc;
 
@@ -110,8 +154,8 @@ end
 
 % tocar soma
 if (selecaoTocar == 2 || selecaoTocar == 3)
-    somaAudio = audioplayer(somaSinal,FS);
-    play(somaAudio);
+    tocar = audioplayer(somaSinal,FS);
+    play(tocar);
     disp("Tocando audio resultante");
     
     pause(Tempo);
@@ -157,6 +201,7 @@ plot(rangeDaMedia,E,'k-o');
 title('Energia Residual por Range de Média Móvel');
 xlabel('Range');
 ylabel('Energia Residual');
+
 % Plotando a forma de onda do melhor resultado do filtro em comparação com
 % osinal original
 subplot(2,1,2)
@@ -168,6 +213,78 @@ title('Melhor Resultado Filtrado vs Áudio Original');
 legend({'Áudio Original','Melhor Áudio Filtrado'});
 xlabel('Tempo');
 
-F = audioplayer(melhorResultadoFiltro,FS,8);
-play(F);
+tocar = audioplayer(melhorResultadoFiltro,FS,8);
+play(tocar);
 disp("Tocando audio resultante");
+
+%% espectro freq
+% janela
+figure('Name','Espectro dos sinais','NumberTitle','off');
+
+freqVozSinal = fft(vozSinal);
+freqRuido = fft(ruidoSinal);
+freqSomaSinal = fft(somaSinal);
+freqMelhorResultado = fft(melhorResultadoFiltro);
+
+% 0: plotar espectro voz
+% 1: plotar espectro ruido
+% 2: plotar espectro soma
+% 3: plotar espectro audio filtrado
+%   4: plotar espectro todos
+selecaoPlotar = 4;
+
+% fft de voz
+if (selecaoPlotar == 0 || selecaoPlotar == 4)
+    if (selecaoPlotar == 4)
+        subplot(4,1,1)
+    end
+    semilogx(abs(freqVozSinal),'k');
+    title("Espectro de Frequência do Sinal Original")
+    xlabel("Frequência em Hertz");
+    ylabel("Amplitude");
+    xlim([0 inf]);
+    ylim([0 1000]);
+    grid on;
+end
+
+% fft do ruido
+if (selecaoPlotar == 1 || selecaoPlotar == 4)
+    if (selecaoPlotar == 4)
+        subplot(4,1,2)
+    end
+    semilogx(abs(freqRuido),'b');
+    title('Espectro de Frequência do Ruído')
+    xlabel("Frequência em Hertz");
+    ylabel("Amplitude");
+    xlim([0 inf]);
+    ylim([0 1000]);
+    grid on;
+end
+
+% fft da soma
+if (selecaoPlotar == 2 || selecaoPlotar == 4)
+    if (selecaoPlotar == 4)
+        subplot(4,1,3)
+    end
+    semilogx(abs(freqSomaSinal));
+    title('Espectro de Frequência do Sinal Somado')
+    xlabel("Frequência em Hertz");
+    ylabel("Amplitude");
+    xlim([0 inf]);
+    ylim([0 1000]);
+    grid on;
+end
+
+% fft do filtrado
+if (selecaoPlotar == 3 || selecaoPlotar == 4)
+    if (selecaoPlotar == 4)
+        subplot(4,1,4)
+    end
+    semilogx(abs(freqMelhorResultado),'r');
+    title('Espectro de Frequência do Melhor Sinal Filtrado')
+    xlabel("Frequência em Hertz");
+    ylabel("Amplitude");
+    xlim([0 inf]);
+    ylim([0 1000]);
+    grid on;
+end

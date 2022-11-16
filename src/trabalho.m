@@ -87,23 +87,40 @@ ylabel("Amplitude");
 
 %% manipulaçao
 
-%    0 = nada
+% 0 = nada
 % 1 = modular por funçao
 % 2 = clipping
 % 3 = inverter
 % 4 = echo
 manipulacao = 3;
+limiteClipping = 0.5;
+funcao = zeros(1,tamSinal + 1);
+
 
 if (manipulacao ~= 0)
     sinalManipulado = zeros(1, tamSinal + 1);
 end
 
+% multiplicação do sinal por uma função
 if (manipulacao == 1)
-
+    for i = 1:tamSinal
+        funcao(i) = exp(i);
+        sinalManipulado(i) = somaSinal(i)*funcao(i);
+    end
 end
 
+% manipulação da amplitude
 if (manipulacao == 2)
-    
+    for i = 1: tamSinal
+        if(somaSinal(i) > limiteClipping)
+            sinalManipulado(i) = limiteClipping;
+        elseif(somaSinal(i) < -limiteClipping)
+            sinalManipulado(i) = -limiteClipping;
+        else
+            sinalManipulado(i) = somaSinal(i);
+        end    
+    end
+
 end
 
 if (manipulacao == 3)
@@ -112,13 +129,18 @@ if (manipulacao == 3)
     end
 end
 
+% ECHO
 if (manipulacao == 4)
-    
+    sinalManipulado(1) = somaSinal(1);
+    for i = 2: tamSinal
+        sinalManipulado(i) = (somaSinal(i-1))/2 + somaSinal(i);
+    end
 end
 
 if (manipulacao ~= 0)
     tocar = audioplayer(sinalManipulado);
-
+    
+    plot(DelimitadorEmX,sinalManipulado,'g');
     disp("Tocando sinal manipulado");
     play(tocar);
 
@@ -175,6 +197,7 @@ disp("SNR = " + SNR + " dB");
 
 rangeDaMedia = 1:1:200;
 E = zeros(length(rangeDaMedia),1);
+% "zeros()" cria vetor/matriz de zeros 
 k = 1;
 for a = rangeDaMedia
     size = a+a+1;

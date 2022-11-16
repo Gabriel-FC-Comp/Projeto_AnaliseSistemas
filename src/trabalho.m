@@ -93,6 +93,7 @@ ylabel("Amplitude");
 % 3 = inverter
 % 4 = echo
 manipulacao = 3;
+limClipping = 0.8;
 
 if (manipulacao ~= 0)
     sinalManipulado = zeros(1, tamSinal + 1);
@@ -103,7 +104,14 @@ if (manipulacao == 1)
 end
 
 if (manipulacao == 2)
-
+    for i = 1: tamSinal
+        if (somaSinal(i) > limClipping)
+            sinalManipulado(i) = limClipping;
+        elseif(somaSinal(i) < -limClipping)
+            sinalManipulado(i) = -limClipping;
+        else
+            sinalManipulado(i) = somaSinal(i);
+    end
 end
 
 if (manipulacao == 3)

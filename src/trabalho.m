@@ -16,7 +16,6 @@ Tempo = 5; %5 segundos de gravação
 FS = 44100; %Frequência de amostragem em 44.1 kHz
 Nbits = 16; %sinal de 16 bits
 %16 bits x 44100 Hz = 705600 bps ou 705.6 Kbps (~88 KBps)
-tamSinal = FS * Nbits;
 Canais = 1; %1 = mono, 2 = stereo
 
 %% setup gravacao
@@ -52,8 +51,11 @@ figure('Name','Gráficos dos áudios','NumberTitle','off');
 % guardar voz em uma variavel double
 vozSinal = getaudiodata(vozAudio, 'double'); %transforma pra vetor double
 
-% delimitador em x
-DelimitadorEmX = (0:length(vozSinal)-1)/FS;
+% obtem o tamanho do sinal
+tamSinal = length(vozSinal);
+
+% delimitador em x (converte a escala de amostras para segundos)
+DelimitadorEmX = (0:tamSinal-1)/FS;
 
 % plota
 subplot(3,1,1);

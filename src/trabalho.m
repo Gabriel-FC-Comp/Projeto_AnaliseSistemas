@@ -96,7 +96,7 @@ ylabel("Amplitude");
 % 4 = echo
 manipulacao = 3;
 limiteClipping = 0.5;
-funcao = zeros(1,tamSinal + 1);
+funcao = linspace(1,6,tamSinal);
 
 
 if (manipulacao ~= 0)
@@ -105,14 +105,16 @@ end
 
 % multiplicação do sinal por uma função
 if (manipulacao == 1)
+    sinalManipulado = zeros(1, tamSinal);
     for i = 1:tamSinal
-        funcao(i) = exp(i);
+        funcao(i) = exp(-funcao(i));
         sinalManipulado(i) = somaSinal(i)*funcao(i);
     end
 end
 
 % manipulação da amplitude
 if (manipulacao == 2)
+    sinalManipulado = zeros(1, tamSinal);
     for i = 1: tamSinal
         if(somaSinal(i) > limiteClipping)
             sinalManipulado(i) = limiteClipping;
@@ -126,6 +128,7 @@ if (manipulacao == 2)
 end
 
 if (manipulacao == 3)
+    sinalManipulado = zeros(1, tamSinal);
     for i = 1: tamSinal
         sinalManipulado(tamSinal-i) = somaSinal(i);
     end
@@ -133,16 +136,31 @@ end
 
 % ECHO
 if (manipulacao == 4)
-    sinalManipulado(1) = somaSinal(1);
-    for i = 2: tamSinal
-        sinalManipulado(i) = (somaSinal(i-1))/2 + somaSinal(i);
+    sinalManipulado = zeros(1, tamSinal);
+    
+    for i = 1 : 10000
+        sinalManipulado(i) = somaSinal(i);
     end
+    
+    for i = 10001: tamSinal
+        sinalManipulado(i) = somaSinal(i) + (somaSinal(i-10000))/3;
+    end
+    
+    for i = tamSinal + 1 : tamSinal + tamSinal/5
+        sinalManipulado(i) = (sinalManipulado(i-10000))/3;
+    end
+    
 end
 
 if (manipulacao ~= 0)
-    tocar = audioplayer(sinalManipulado);
-    
-    plot(DelimitadorEmX,sinalManipulado,'g');
+    tocar = audioplayer(sinalManipulado,FS);
+    DelimitadorEmXManipulado = (0:length(sinalManipulado)-1)/FS;
+    plot(DelimitadorEmXManipulado,sinalManipulado,'g');
+    ylim([-1 1])
+    grid("on");
+    title("Sinal da soma entre os dois áudios manipulado");
+    xlabel("Tempo em segundos");
+    ylabel("Amplitude");
     disp("Tocando sinal manipulado");
     play(tocar);
 
@@ -155,7 +173,7 @@ clc;
 % 0: tocar voz
 % 1: tocar ruido
 % 2: tocar soma
-%   3: tocar todos
+% 3: tocar todos
 selecaoTocar = 3;
 
 % tocar voz

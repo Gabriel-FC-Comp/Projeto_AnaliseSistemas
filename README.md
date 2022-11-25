@@ -14,12 +14,8 @@ Right now, the program does the following:
 - Uses moving average as a filter;
 - Filters audio from the moving average and plots a graph afterwards;
 - Plays this forth filtered audio.
-
-----
-
-TODO in the future:
-- Create spectrum frequency code to show it using Fourier;
-- Scale spectrum accordingly.
+- Creates spectrum frequency using Fourier and shows on screen;
+- Scales spectrum accordingly.
 
 ----
 ¹: may be a wrong translation.
